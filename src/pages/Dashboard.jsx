@@ -18,9 +18,47 @@ export default function Dashboard() {
   const [createdUrl, setCreatedUrl] = useState(null);
 
   /* -----------------------------------------------------
-    1) HANDLE REDIRECTION WHEN VISITING /:value
+
+  /* -----------------------------------------------------
+    3) SHOW NOT FOUND PAGE
+  ----------------------------------------------------- */
+
+  /* -----------------------------------------------------
+    4) FETCH ALL LINKS
+  ----------------------------------------------------- */
+  const loadLinks = async () => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/links`);
+      const data = await res.json();
+      setLinks(data);
+    } catch {
+      console.error("Failed to fetch links");
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    loadLinks();
+  }, []);
+
+ 
+  /* -----------------------------------------------------
+    2) OPEN LINK IN NEW TAB
   ----------------------------------------------------- */
   useEffect(() => {
+    if (!redirectionUrl || notFound) return;
+
+    let finalUrl = redirectionUrl.trim();
+
+    if (!finalUrl.startsWith("http://") && !finalUrl.startsWith("https://")) {
+      finalUrl = "https://" + finalUrl;
+    }
+
+    window.open(finalUrl, "_blank");
+  }, [redirectionUrl, notFound]);
+
+
+   useEffect(() => {
     if (!value) return;
 
     const checkShortCode = async () => {
@@ -42,47 +80,9 @@ export default function Dashboard() {
     checkShortCode();
   }, [value]);
 
-  /* -----------------------------------------------------
-    2) OPEN LINK IN NEW TAB
-  ----------------------------------------------------- */
-  useEffect(() => {
-    if (!redirectionUrl || notFound) return;
-
-    let finalUrl = redirectionUrl.trim();
-
-    if (!finalUrl.startsWith("http://") && !finalUrl.startsWith("https://")) {
-      finalUrl = "https://" + finalUrl;
-    }
-
-    window.open(finalUrl, "_blank");
-  }, [redirectionUrl, notFound]);
-
-  /* -----------------------------------------------------
-    3) SHOW NOT FOUND PAGE
-  ----------------------------------------------------- */
   if (notFound) return <NotFound />;
 
-  /* -----------------------------------------------------
-    4) FETCH ALL LINKS
-  ----------------------------------------------------- */
-  const loadLinks = async () => {
-    try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/links`);
-      const data = await res.json();
-      setLinks(data);
-    } catch {
-      console.error("Failed to fetch links");
-    }
-    setLoading(false);
-  };
 
-  useEffect(() => {
-    loadLinks();
-  }, []);
-
-  /* -----------------------------------------------------
-    5) UI RENDER
-  ----------------------------------------------------- */
   return (
     <Layout>
       {/* HEADER */}
