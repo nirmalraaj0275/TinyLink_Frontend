@@ -8,17 +8,17 @@ import CreatedPopup from "@/components/CreatedPopup";
 import { useParams } from "react-router-dom";
 
 export default function Dashboard() {
+  const { value } = useParams();
+
   const [showForm, setShowForm] = useState(false);
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const { value } = useParams();  // short code from URL
+  const [redirectionUrl, setRedirectionUrl] = useState(null);
   const [notFound, setNotFound] = useState(false);
   const [createdUrl, setCreatedUrl] = useState(null);
 
-  /* -----------------------------------------------------
-    FETCH ALL LINKS (Dashboard table)
-  ----------------------------------------------------- */
+  /* ---------------------- FETCH ALL LINKS ---------------------- */
   const loadLinks = async () => {
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/links`);
@@ -34,45 +34,51 @@ export default function Dashboard() {
     loadLinks();
   }, []);
 
-  /* -----------------------------------------------------
-    AUTO-OPEN REDIRECT PAGE IN NEW TAB
-    (This is the correct production behavior)
-  ----------------------------------------------------- */
+  /* ---------------------- REDIRECT SHORT URL ---------------------- */
   useEffect(() => {
     if (!value) return;
 
-    // Backend will handle 301 redirect for us
-    const backendRedirectUrl = `${import.meta.env.VITE_API_URL}/api/links/${value}`;
+    const checkShort = async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/links/${value}`
+        );
 
-    // Open redirect route in new tab
-    window.open(backendRedirectUrl, "_blank");
-  }, [value]);
+        if (res.status === 404) {
+          setNotFound(true);
+          return;
+        }
 
-  /* -----------------------------------------------------
-    SHOW NOT FOUND PAGE IF API RETURNS 404
-    (Optional: if you have a dedicated NotFound UI)
-  ----------------------------------------------------- */
-  useEffect(() => {
-    const checkCodeExists = async () => {
-      if (!value) return;
-
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/links/${value}`, {
-        method: "HEAD",
-      });
-
-      if (res.status === 404) setNotFound(true);
+        const data = await res.json();
+        setRedirectionUrl(data.url);
+      } catch {
+        setNotFound(true);
+      }
     };
 
-    checkCodeExists();
+    checkShort();
   }, [value]);
 
-  if (notFound) return <NotFound />;
+  /* ---------------------- OPEN REDIRECTION URL ---------------------- */
+  useEffect(() => {
+    if (!redirectionUrl || notFound) return;
 
+    let finalUrl = redirectionUrl.trim();
+
+    if (!finalUrl.startsWith("http://") && !finalUrl.startsWith("https://")) {
+      finalUrl = "https://" + finalUrl;
+    }
+
+    window.open(finalUrl, "_blank");
+  }, [redirectionUrl, notFound]);
+
+  /* ---------------------- RETURN SECTION ---------------------- */
+  if (notFound) return <NotFound />;
 
   return (
     <Layout>
       {/* HEADER */}
-      <div className="flex flex-col  md:flex-row md:items-center md:justify-between gap-4 ">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h2 className="text-3xl font-bold text-slate-800">Dashboard</h2>
           <p className="text-sm text-slate-500">
@@ -93,16 +99,16 @@ export default function Dashboard() {
         <input
           type="text"
           placeholder="Search by code or URL..."
-          className="w-full border rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm"
+          className="w-full border rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 shadow-sm"
         />
       </div>
 
-      {/* TABLE OR LOADER */}
+      {/* TABLE */}
       <div className="mt-6 overflow-x-auto">
         {loading ? <Loader /> : <LinkTable links={links} onDelete={loadLinks} />}
       </div>
 
-      {/* POPUP: CREATE LINK */}
+      {/* POPUPS */}
       {showForm && (
         <AddLinkForm
           onClose={() => setShowForm(false)}
@@ -114,7 +120,6 @@ export default function Dashboard() {
         />
       )}
 
-      {/* POPUP: CREATED SUCCESSFULLY */}
       {createdUrl && (
         <CreatedPopup shortUrl={createdUrl} onClose={() => setCreatedUrl(null)} />
       )}
