@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/fav.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UI-Bridge-Website</title>
+
+  <!-- FLOATING ADMIN BUTTON STYLE -->
+  <style>
+    #admin-btn {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      width: 60px;
+      height: 60px;
+      background: #4871b7;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 28px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+      z-index: 99999;
+      transition: 0.3s ease;
+    }
+
+    #admin-btn:hover {
+      transform: scale(1.1);
+      background: #365b94;
+    }
+
+    #admin-btn span {
+      font-size: 22px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <!-- FLOATING ADMIN BUTTON -->
+  <div id="admin-btn" onclick="goToAdmin()">
+    <span>⚙️</span>
+  </div>
+
+  <!-- SCRIPT FOR REDIRECT -->
+  <script>
+    function goToAdmin() {
+      window.location.href = "/admin/login";
+    }
+  </script>
+
+  <!-- MAIN ENTRY FILE -->
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
+</html>
