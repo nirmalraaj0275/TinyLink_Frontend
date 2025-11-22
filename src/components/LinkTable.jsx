@@ -12,12 +12,10 @@ export default function LinkTable({ links, onDelete }) {
     }
   };
 
-  // ✅ SHORT URL SHOULD USE ONLY BACKEND ROOT + CODE
   const copyShortUrl = (code) => {
-    const backend = import.meta.env.VITE_API_URL; // backend URL
-    const shortUrl = `${backend}/${code}`;        // backend redirect route
+    const origin = import.meta.env.VITE_API_URL;
+    const shortUrl = `${origin}/${code}`;
     navigator.clipboard.writeText(shortUrl);
-    alert("Short URL copied!");
   };
 
   if (!links.length) {
@@ -47,10 +45,10 @@ export default function LinkTable({ links, onDelete }) {
               key={l.code}
               className="hover:bg-slate-50 transition-all duration-200"
             >
-              {/* Short Code (Backend redirect URL) */}
+              {/* Short Code */}
               <td className="p-3 font-mono">
                 <a
-                  href={`${import.meta.env.VITE_API_URL}/${l.code}`}   // <--- FIXED
+                  href={`${import.meta.env.VITE_API_URL}/${l.code}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 font-bold hover:text-blue-700"
