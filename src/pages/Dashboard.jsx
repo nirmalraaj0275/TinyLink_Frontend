@@ -46,16 +46,17 @@ export default function Dashboard() {
     2) OPEN LINK IN NEW TAB
   ----------------------------------------------------- */
   useEffect(() => {
-    if (!redirectionUrl || notFound) return;
+    if (!redirectionUrl) return;
 
     let finalUrl = redirectionUrl.trim();
 
     if (!finalUrl.startsWith("http://") && !finalUrl.startsWith("https://")) {
       finalUrl = "https://" + finalUrl;
     }
+    console.log("finalUrl", finalUrl)
 
     window.open(finalUrl, "_blank");
-  }, [redirectionUrl, notFound]);
+  }, [redirectionUrl]);
 
 
    useEffect(() => {
@@ -71,6 +72,7 @@ export default function Dashboard() {
         }
 
         const data = await res.json();
+        console.log("data", data)
         setRedirectionUrl(data.url);
       } catch {
         setNotFound(true);
