@@ -12,19 +12,12 @@ export default function Dashboard() {
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const { value } = useParams();
-  const [redirectionUrl, setRedirectionUrl] = useState(null);
+  const { value } = useParams();  // short code from URL
   const [notFound, setNotFound] = useState(false);
   const [createdUrl, setCreatedUrl] = useState(null);
 
   /* -----------------------------------------------------
-
-  /* -----------------------------------------------------
-    3) SHOW NOT FOUND PAGE
-  ----------------------------------------------------- */
-
-  /* -----------------------------------------------------
-    4) FETCH ALL LINKS
+    FETCH ALL LINKS (Dashboard table)
   ----------------------------------------------------- */
   const loadLinks = async () => {
     try {
@@ -41,56 +34,36 @@ export default function Dashboard() {
     loadLinks();
   }, []);
 
- 
   /* -----------------------------------------------------
-    2) OPEN LINK IN NEW TAB
+    AUTO-OPEN REDIRECT PAGE IN NEW TAB
+    (This is the correct production behavior)
   ----------------------------------------------------- */
-
-  const redirect = (url) => {
-  const a = document.createElement("a");
-  a.href = url;
-  a.target = "_blank";
-  a.rel = "noopener noreferrer";
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-};
   useEffect(() => {
-    if (!redirectionUrl) return;
-
-    let finalUrl = redirectionUrl.trim();
-
-    if (!finalUrl.startsWith("http://") && !finalUrl.startsWith("https://")) {
-      finalUrl = "https://" + finalUrl;
-    }
-    console.log("finalUrl", finalUrl)
-    // window.location.href = finalUrl;
-
-    redirect(finalUrl);
-  }, [redirectionUrl]);
-
-
-   useEffect(() => {
     if (!value) return;
 
-    const checkShortCode = async () => {
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/links/${value}`);
+    // Backend will handle 301 redirect for us
+    const backendRedirectUrl = `${import.meta.env.VITE_API_URL}/api/links/${value}`;
 
-        if (res.status === 404) {
-          setNotFound(true);
-          return;
-        }
+    // Open redirect route in new tab
+    window.open(backendRedirectUrl, "_blank");
+  }, [value]);
 
-        const data = await res.json();
-        console.log("data", data)
-        setRedirectionUrl(data.url);
-      } catch {
-        setNotFound(true);
-      }
+  /* -----------------------------------------------------
+    SHOW NOT FOUND PAGE IF API RETURNS 404
+    (Optional: if you have a dedicated NotFound UI)
+  ----------------------------------------------------- */
+  useEffect(() => {
+    const checkCodeExists = async () => {
+      if (!value) return;
+
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/links/${value}`, {
+        method: "HEAD",
+      });
+
+      if (res.status === 404) setNotFound(true);
     };
 
-    checkShortCode();
+    checkCodeExists();
   }, [value]);
 
   if (notFound) return <NotFound />;
