@@ -12,11 +12,12 @@ export default function LinkTable({ links, onDelete }) {
     }
   };
 
-  const copyShortUrl = (code) => {
-    const origin = import.meta.env.VITE_API_URL;
-    const shortUrl = `${origin}/${code}`;
-    navigator.clipboard.writeText(shortUrl);
-  };
+ const copyShortUrl = (code) => {
+  const origin = import.meta.env.VITE_API_URL; // backend URL
+  const shortUrl = `${origin}/${code}`;
+  window.navigator.clipboard.writeText(shortUrl);
+};
+
 
   if (!links.length) {
     return (
