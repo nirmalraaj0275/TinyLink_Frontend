@@ -25,7 +25,7 @@ export default function Dashboard() {
 
     const checkShortCode = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/links/${value}`);
+        const res = await fetch(`${import.meta.env.VITE_CLIENT_URL}/api/links/${value}`);
 
         if (res.status === 404) {
           setNotFound(true);
