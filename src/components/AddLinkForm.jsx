@@ -31,7 +31,7 @@ export default function AddLinkForm({ onClose, onSuccess }) {
         return;
       }
 
-      const shortUrl = `${import.meta.env.VITE_CLIENT_URL}/${codeToSend}`;
+      const shortUrl = `${import.meta.env.VITE_API_URL}/${codeToSend}`;
       onSuccess(shortUrl);
       onClose();
 
