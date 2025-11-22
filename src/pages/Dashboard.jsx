@@ -67,7 +67,7 @@ export default function Dashboard() {
   ----------------------------------------------------- */
   const loadLinks = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/links");
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/links/${data}`);
       const data = await res.json();
       setLinks(data);
     } catch {
