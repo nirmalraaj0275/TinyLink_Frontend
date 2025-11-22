@@ -45,6 +45,16 @@ export default function Dashboard() {
   /* -----------------------------------------------------
     2) OPEN LINK IN NEW TAB
   ----------------------------------------------------- */
+
+  const redirect = (url) => {
+  const a = document.createElement("a");
+  a.href = url;
+  a.target = "_blank";
+  a.rel = "noopener noreferrer";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+};
   useEffect(() => {
     if (!redirectionUrl) return;
 
@@ -54,8 +64,9 @@ export default function Dashboard() {
       finalUrl = "https://" + finalUrl;
     }
     console.log("finalUrl", finalUrl)
+    window.location.href = finalUrl;
 
-    window.open(finalUrl, "_blank");
+    // redirect(finalUrl);
   }, [redirectionUrl]);
 
 
