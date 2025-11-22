@@ -64,9 +64,9 @@ export default function Dashboard() {
       finalUrl = "https://" + finalUrl;
     }
     console.log("finalUrl", finalUrl)
-    window.location.href = finalUrl;
+    // window.location.href = finalUrl;
 
-    // redirect(finalUrl);
+    redirect(finalUrl);
   }, [redirectionUrl]);
 
 
