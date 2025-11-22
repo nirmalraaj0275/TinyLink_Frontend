@@ -3,19 +3,12 @@ import AddLinkForm from "@/components/AddLinkForm";
 import LinkTable from "@/components/LinkTable";
 import Loader from "@/components/Loader";
 import Layout from "@/layout/layouts";
-import NotFound from "@/components/notfound";
 import CreatedPopup from "@/components/CreatedPopup";
-import { useParams } from "react-router-dom";
 
 export default function Dashboard() {
-  const { value } = useParams();
-
   const [showForm, setShowForm] = useState(false);
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const [redirectionUrl, setRedirectionUrl] = useState(null);
-  const [notFound, setNotFound] = useState(false);
   const [createdUrl, setCreatedUrl] = useState(null);
 
   /* ---------------------- FETCH ALL LINKS ---------------------- */
@@ -34,47 +27,7 @@ export default function Dashboard() {
     loadLinks();
   }, []);
 
-  /* ---------------------- REDIRECT SHORT URL ---------------------- */
-  useEffect(() => {
-    if (!value) return;
-
-    const checkShort = async () => {
-      try {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/links/${value}`
-        );
-
-        if (res.status === 404) {
-          setNotFound(true);
-          return;
-        }
-
-        const data = await res.json();
-        setRedirectionUrl(data.url);
-      } catch {
-        setNotFound(true);
-      }
-    };
-
-    checkShort();
-  }, [value]);
-
-  /* ---------------------- OPEN REDIRECTION URL ---------------------- */
-  useEffect(() => {
-    if (!redirectionUrl || notFound) return;
-
-    let finalUrl = redirectionUrl.trim();
-
-    if (!finalUrl.startsWith("http://") && !finalUrl.startsWith("https://")) {
-      finalUrl = "https://" + finalUrl;
-    }
-
-    window.open(finalUrl, "_blank");
-  }, [redirectionUrl, notFound]);
-
-  /* ---------------------- RETURN SECTION ---------------------- */
-  if (notFound) return <NotFound />;
-
+  /* ---------------------- UI RENDER ---------------------- */
   return (
     <Layout>
       {/* HEADER */}
@@ -112,10 +65,10 @@ export default function Dashboard() {
       {showForm && (
         <AddLinkForm
           onClose={() => setShowForm(false)}
-          onSuccess={(shortUrl) => {
+          onSuccess={(short) => {
             setShowForm(false);
             loadLinks();
-            setCreatedUrl(shortUrl);
+            setCreatedUrl(short);
           }}
         />
       )}

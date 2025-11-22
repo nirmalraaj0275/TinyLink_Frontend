@@ -1,86 +1,83 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FiExternalLink, FiCopy } from "react-icons/fi";
 
 export default function CreatedPopup({ shortUrl, onClose }) {
   const [copied, setCopied] = useState(false);
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(shortUrl);
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(shortUrl);
     setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    setTimeout(() => setCopied(false), 1200);
   };
 
-  const openRedirect = () => {
+  const openLink = () => {
     window.open(shortUrl, "_blank");
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">
-      <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl w-full max-w-lg p-7 border border-gray-200 animate-scaleIn">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 border border-gray-200">
 
         {/* Title */}
-        <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center justify-center gap-2">
-          🎉 Link Created Successfully
+        <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
+          🎉 Short Link Created!
         </h2>
 
-        {/* URL Box */}
-        <div className="relative mb-6">
+        {/* Short URL Input */}
+        <div className="relative mb-5">
           <input
             type="text"
             value={shortUrl}
             readOnly
-            className="w-full border-2 border-green-400 text-gray-800 rounded-xl px-4 py-3 pr-16 text-sm bg-green-50 outline-none"
+            className="w-full border border-green-400 bg-green-50 text-gray-800 rounded-xl px-4 py-3 pr-20 text-sm"
           />
 
-          {/* Visit Button */}
+          {/* Open URL */}
           <button
-            onClick={openRedirect}
-            className="absolute right-12 top-1/2 -translate-y-1/2 text-gray-600 hover:text-blue-700 transition"
+            onClick={openLink}
+            className="absolute right-12 top-1/2 -translate-y-1/2 text-gray-600 hover:text-blue-700"
           >
-            <FiExternalLink size={20} />
+            <FiExternalLink size={18} />
           </button>
 
-          {/* Copy Button */}
+          {/* Copy */}
           <button
-            onClick={copyToClipboard}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-green-700 transition"
+            onClick={handleCopy}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-green-700"
           >
             {copied ? (
-              <span className="text-green-700 text-sm font-semibold animate-bounce">
-                ✓
-              </span>
+              <span className="text-green-700 text-sm font-semibold">✓</span>
             ) : (
-              <FiCopy size={20} />
+              <FiCopy size={18} />
             )}
           </button>
         </div>
 
         {/* CTA Buttons */}
-        <div className="flex justify-center gap-4 mt-4">
+        <div className="flex justify-center gap-3">
           <button
-            onClick={openRedirect}
-            className="px-5 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition-transform hover:scale-105"
+            onClick={openLink}
+            className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
           >
             Visit URL
           </button>
 
           <button
-            onClick={copyToClipboard}
-            className="px-5 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition-transform hover:scale-105"
+            onClick={handleCopy}
+            className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
           >
             {copied ? "Copied!" : "Copy"}
           </button>
         </div>
 
-        {/* Close Button */}
+        {/* Close */}
         <button
           onClick={onClose}
-          className="mt-6 text-gray-600 hover:text-gray-900 underline block mx-auto transition"
+          className="mt-6 block mx-auto text-sm text-gray-600 hover:text-gray-900 underline"
         >
           Close
         </button>
       </div>
-
     </div>
   );
 }
