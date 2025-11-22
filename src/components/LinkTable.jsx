@@ -12,6 +12,11 @@ export default function LinkTable({ links, onDelete }) {
     }
   };
 
+// const laypout(l) {
+//   const origin = import.meta.env.VITE_API_URL; // backend URL
+//   const shortUrl = `${origin}/${l.code}`;
+//   return shortUrl 
+// }
  const copyShortUrl = (code) => {
   const origin = import.meta.env.VITE_API_URL; // backend URL
   const shortUrl = `${origin}/${code}`;
