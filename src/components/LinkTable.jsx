@@ -70,7 +70,11 @@ export default function LinkTable({ links, onDelete }) {
                 {/* LONG URL */}
                 <td className="p-3 max-w-xs">
                   <a
-                    href={l.url}
+                    href={
+                      l.url.startsWith("http://") || l.url.startsWith("https://")
+                        ? l.url
+                        : "https://" + l.url.replace(/^\/+/, "")
+                    }
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block truncate text-slate-700 hover:text-blue-600 hover:underline"

@@ -18,7 +18,7 @@ export default function CreatedPopup({ shortUrl, onClose }) {
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 border border-gray-200">
 
-        {/* Title */}
+       
         <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
           🎉 Short Link Created!
         </h2>
@@ -32,7 +32,7 @@ export default function CreatedPopup({ shortUrl, onClose }) {
             className="w-full border border-green-400 bg-green-50 text-gray-800 rounded-xl px-4 py-3 pr-20 text-sm"
           />
 
-          {/* Open URL */}
+       
           <button
             onClick={openLink}
             className="absolute right-12 top-1/2 -translate-y-1/2 text-gray-600 hover:text-blue-700"
@@ -40,7 +40,7 @@ export default function CreatedPopup({ shortUrl, onClose }) {
             <FiExternalLink size={18} />
           </button>
 
-          {/* Copy */}
+          
           <button
             onClick={handleCopy}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-green-700"
@@ -53,7 +53,7 @@ export default function CreatedPopup({ shortUrl, onClose }) {
           </button>
         </div>
 
-        {/* CTA Buttons */}
+       
         <div className="flex justify-center gap-3">
           <button
             onClick={openLink}
